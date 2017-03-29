@@ -4,15 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class MainClass {
 
+public class MainClass {
 
     public static void main(String[] args) throws IOException {
 
-        double tekymka;
-        double perekach;
-        int ostatokopita;
-        int vidovboev;
+        double skillsNow;
+        double overheat;
+        int remainsExperience;
+        int kindCombats;
         int k = 0;
         int g;
         int count = 0;
@@ -20,20 +20,20 @@ public class MainClass {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.println("Введите текущую умку");
-        tekymka = Double.parseDouble(reader.readLine());
+        skillsNow = Double.parseDouble(reader.readLine());
 
         System.out.println("Введите перекач(более 100 если вы получаете доп опыт)");
-        perekach = Double.parseDouble(reader.readLine());
+        overheat = Double.parseDouble(reader.readLine());
 
         System.out.println("Введите остаток опыта");
-        ostatokopita = Integer.parseInt(reader.readLine());
+        remainsExperience = Integer.parseInt(reader.readLine());
 
         System.out.println("Введите кол-во видов боёв");
-        vidovboev = Integer.parseInt(reader.readLine());
+        kindCombats = Integer.parseInt(reader.readLine());
 
-        Battle[] massiv = new Battle[vidovboev];
+        Combat[] massiv = new Combat[kindCombats];
 
-        for (int i = 0; i < vidovboev; i++) {
+        for (int i = 0; i < kindCombats; i++) {
 
             System.out.println("Введите опыт за " + (i + 1) + " вид боя");
             int boiopit = Integer.parseInt(reader.readLine());
@@ -47,42 +47,40 @@ public class MainClass {
             System.out.println("Сколько всего боев " + (i + 1) + " вида надо сыграть за уровень");
             int nadoboev = Integer.parseInt(reader.readLine());
 
-            massiv[i] = new Battle(boiopit, boiymka, boevvden, nadoboev);
-
+            massiv[i] = new Combat(boiopit, boiymka, boevvden, nadoboev);
         }
 
-
-        for (int i = 0; i < vidovboev; i++) {
-            if (perekach > 100) {
-                massiv[i].boiopit = (int) round((massiv[i].boiopit / perekach * 100), 0);
+        for (int i = 0; i < kindCombats; i++) {
+            if (overheat > 100) {
+                massiv[i].combatExperience = (int) round((massiv[i].combatExperience / overheat * 100), 0);
             }
-            k += massiv[i].boiopit * massiv[i].boevvden;
-            count += massiv[i].nadoboev;
+            k += massiv[i].combatExperience * massiv[i].combatsPerDay;
+            count += massiv[i].combatsNeed;
         }
-        int symma = 0;
-        while ((ostatokopita > (k * perekach / 100)) && (symma != count)) {
-            for (int i = 0; i < vidovboev; i++) {
+        int sum = 0;
+        while ((remainsExperience > (k * overheat / 100)) && (count != sum++)) {
+            for (int i = 0; i < kindCombats; i++) {
                 g = 0;
-                while ((g < massiv[i].boevvden) && (massiv[i].tekboev < massiv[i].nadoboev)) {
-                    massiv[i].tekboev++;
-                    g++;
-                    symma++;
-                    if (perekach > 100) {
-                        ostatokopita -= (int)round((massiv[i].boiopit * perekach / 100), 0);
-                    } else ostatokopita -= massiv[i].boiopit;
-                    perekach += (perekach / tekymka * massiv[i].boiymka);
-                    tekymka += massiv[i].boiymka;
+                while ((g++ < massiv[i].combatsPerDay) && (massiv[i].combatsNow < massiv[i].combatsNeed)) {
+                    massiv[i].combatsNow++;
+                    if (overheat > 100) {
+                        remainsExperience -= (int) round((massiv[i].combatExperience * overheat / 100), 0);
+                    } else remainsExperience -= massiv[i].combatExperience;
+                    overheat += (overheat / skillsNow * massiv[i].combatSkill);
+                    skillsNow += massiv[i].combatSkill;
                 }
             }
         }
-        System.out.println("Опыта осталось " + ostatokopita);
-        if (perekach > 100) System.out.println("Перекач +" + round((perekach % 100),2) + "%");
-        else System.out.println("В норме, " + round(perekach,2) + "%");
-        System.out.println("Умки теперь " + round(tekymka,2));
-        for (int i = 0; i < vidovboev; i++) {
-            System.out.println("Количество боёв " + (i + 1) + " вида за уровень = " + massiv[i].tekboev);
+        System.out.println("Опыта осталось " + remainsExperience);
+        if (overheat > 100) {
+            System.out.println("Перекач +" + round((overheat % 100), 2) + "%");
+        } else {
+            System.out.println("В норме, " + round(overheat, 2) + "%");
         }
-
+        System.out.println("Умки теперь " + round(skillsNow, 2));
+        for (int i = 0; i < kindCombats; i++) {
+            System.out.println("Количество боёв " + (i + 1) + " вида за уровень = " + massiv[i].combatsNow);
+        }
     }
 
     private static double round(double number, int scale) {
@@ -93,6 +91,4 @@ public class MainClass {
         double tmp = number * pow;
         return (double) (int) ((tmp - (int) tmp) >= 0.5f ? tmp + 1 : tmp) / pow;
     }
-
-
-}
+}+
