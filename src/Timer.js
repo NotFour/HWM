@@ -21,6 +21,7 @@ class TimerApp extends React.Component {
             this.setState({timeLeft: timeLeft})
         },1000)
         return(
+
             this.setState({timeLeft: timeLeft, timer: timer})
         )
     }
