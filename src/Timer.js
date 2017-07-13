@@ -19,6 +19,8 @@ class TimerApp extends React.Component {
                 clearInterval(timer)
             }
             this.setState({timeLeft: timeLeft})
+
+
         },1000)
         return(
 
